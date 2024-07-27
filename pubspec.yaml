@@ -1,14 +1,13 @@
 name: stupid_script
 description: The stupid scripting language.
 version: 1.0.0
-repository: https://github.com/my_org/my_repo
+repository: https://github.com/chrisnorman7/stupid_script
 
 environment:
   sdk: ^3.5.0-323.1.beta
 
-# Add regular dependencies here.
 dependencies:
-  # path: ^1.8.0
+  path: ^1.8.0
 
 dev_dependencies:
   lints: ^4.0.0
