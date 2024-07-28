@@ -2,6 +2,7 @@ import 'dart:math';
 
 import '../commands/script_command.dart';
 import '../commands/script_command_argument.dart';
+import '../commands/script_command_optional_argument.dart';
 import '../exceptions.dart';
 import '../script_context.dart';
 
@@ -17,14 +18,19 @@ class RandomInt extends ScriptCommand {
   );
 
   /// The b argument.
-  static const bArgument = ScriptCommandArgument(
+  static const bArgument = ScriptCommandOptionalArgument(
     name: 'b',
     description: 'One end of the possible range of numbers.',
+    defaultValue: '0',
   );
 
   /// The arguments of this command.
   @override
-  List<ScriptCommandArgument> get arguments => [aArgument, bArgument];
+  List<ScriptCommandArgument> get arguments => [aArgument];
+
+  /// Optional arguments.
+  @override
+  List<ScriptCommandOptionalArgument> get optionalArguments => [bArgument];
 
   /// Get an example.
   @override
@@ -46,15 +52,26 @@ class RandomInt extends ScriptCommand {
     final Map<String, String> arguments,
   ) {
     final aString = arguments[aArgument.name]!;
-    final bString = arguments[bArgument.name]!;
     final a = int.tryParse(aString);
-    final b = int.tryParse(bString) ?? 0;
     if (a == null) {
       throw ScriptCommandArgumentError(
         command: this,
         argument: aArgument,
         value: aString,
-        message: 'Invalid value.',
+        message: 'Invalid number.',
+      );
+    }
+    final bString = arguments[bArgument.name];
+    if (bString == null) {
+      return '${scriptContext.random.nextInt(a)}';
+    }
+    final b = int.tryParse(bString);
+    if (b == null) {
+      throw ScriptCommandArgumentError(
+        command: this,
+        argument: bArgument,
+        value: bString,
+        message: 'Invalid number.',
       );
     }
     final lower = min(a, b);

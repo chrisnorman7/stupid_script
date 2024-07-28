@@ -108,13 +108,27 @@ class ScriptContext {
     final ScriptCommand command,
     final List<String> arguments,
   ) async {
-    if (arguments.length != command.arguments.length) {
+    if (arguments.length < command.arguments.length) {
+      throw ArgumentMismatch(command: command, actualNumber: arguments.length);
+    } else if (arguments.length >
+        (command.arguments.length + command.optionalArguments.length)) {
       throw ArgumentMismatch(command: command, actualNumber: arguments.length);
     }
     final argumentsMap = <String, String>{};
     for (var i = 0; i < command.arguments.length; i++) {
       final argument = command.arguments[i];
       argumentsMap[argument.name] = substituteText(arguments[i]);
+    }
+    for (var i = command.arguments.length;
+        i < command.optionalArguments.length + command.arguments.length;
+        i++) {
+      final argument = command.optionalArguments[i - command.arguments.length];
+      try {
+        argumentsMap[argument.name] = substituteText(arguments[i]);
+        // ignore: avoid_catching_errors
+      } on RangeError {
+        argumentsMap[argument.name] = argument.defaultValue;
+      }
     }
     return command.invoke(this, argumentsMap);
   }

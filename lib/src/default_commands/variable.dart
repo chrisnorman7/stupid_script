@@ -1,5 +1,6 @@
 import '../commands/script_command.dart';
 import '../commands/script_command_argument.dart';
+import '../commands/script_command_optional_argument.dart';
 import '../script_context.dart';
 
 /// The var command.
@@ -37,6 +38,10 @@ class Variable implements ScriptCommand {
         nameArgument,
         valueArgument,
       ];
+
+  /// Optional arguments.
+  @override
+  List<ScriptCommandOptionalArgument> get optionalArguments => [];
 
   /// Invoke the command.
   @override

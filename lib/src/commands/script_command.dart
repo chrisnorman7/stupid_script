@@ -2,6 +2,7 @@ import 'dart:async';
 
 import '../script_context.dart';
 import 'script_command_argument.dart';
+import 'script_command_optional_argument.dart';
 
 /// A command which can be called from a script.
 abstract class ScriptCommand {
@@ -24,4 +25,7 @@ abstract class ScriptCommand {
 
   /// The arguments this command accepts.
   List<ScriptCommandArgument> get arguments;
+
+  /// The optional arguments.
+  List<ScriptCommandOptionalArgument> get optionalArguments;
 }

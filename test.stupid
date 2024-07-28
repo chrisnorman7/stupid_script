@@ -1,2 +1,5 @@
 print This script is %filename%.
-print I like the number {random_int 25}.
+print A child is {random_int 19}.
+print An adult is {random_int 25|18}.
+print The next line will throw an error.
+random_int 1|2|3

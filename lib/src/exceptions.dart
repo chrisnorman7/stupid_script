@@ -53,8 +53,20 @@ class ArgumentMismatch extends StupidScriptException {
     required final int actualNumber,
   }) : super(
           message: 'Invalid number of arguments for ${command.name}. Expected '
-              '${command.arguments.length}, got $actualNumber.',
+              '${command.optionalArguments.isEmpty ? "exactly "
+                  "${minSupportedArguments(command)}" : "between "
+                  "${minSupportedArguments(command)} and "
+                  "${maxSupportedArguments(command)}"}, '
+              'got $actualNumber.',
         );
+
+  /// Return the minimum number of arguments supported by [command].
+  static int minSupportedArguments(final ScriptCommand command) =>
+      command.arguments.length;
+
+  /// Return the maximum number of arguments supported by [command].
+  static int maxSupportedArguments(final ScriptCommand command) =>
+      minSupportedArguments(command) + command.optionalArguments.length;
 }
 
 /// A general script error occurred.

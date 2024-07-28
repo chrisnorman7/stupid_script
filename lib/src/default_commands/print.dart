@@ -1,5 +1,6 @@
 import '../commands/script_command.dart';
 import '../commands/script_command_argument.dart';
+import '../commands/script_command_optional_argument.dart';
 import '../script_context.dart';
 
 /// The print command.
@@ -14,6 +15,10 @@ class Print implements ScriptCommand {
   /// The arguments.
   @override
   List<ScriptCommandArgument> get arguments => [textArgument];
+
+  /// Optional arguments.
+  @override
+  List<ScriptCommandOptionalArgument> get optionalArguments => [];
 
   /// A suitable example.
   @override
