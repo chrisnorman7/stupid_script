@@ -6,10 +6,21 @@ import 'package:stupid_script/stupid_script.dart';
 
 const runner = ScriptRunner.withDefaults();
 
+/// Pretty print a script [error].
+void printScriptError(final String line, final ScriptError error) {
+  print('Error on line ${error.lineNumber + 1}: $line:');
+  print(error.exception);
+}
+
 /// The main entry point.
 Future<void> main(final List<String> arguments) async {
-  final lines = <String>[];
+  final random = Random();
   if (arguments.isEmpty) {
+    final context = ScriptContext(
+      runner: runner,
+      random: random,
+      variables: {},
+    );
     print('Enter script:');
     var i = 0;
     while (true) {
@@ -34,21 +45,29 @@ Future<void> main(final List<String> arguments) async {
         continue;
       }
       i++;
-      lines.add(line);
+      try {
+        print(await context.handleLine(line));
+      } on ScriptError catch (e) {
+        printScriptError(line, e);
+      }
     }
   } else {
-    lines.addAll(arguments);
-  }
-  final random = Random();
-  final context = ScriptContext(
-    runner: runner,
-    random: random,
-    variables: {},
-  );
-  try {
-    await context.run(lines);
-  } on ScriptError catch (e) {
-    print('Error on line ${e.lineNumber + 1}: ${lines[e.lineNumber]}:');
-    print(e.exception);
+    for (final filename in arguments) {
+      final file = File(filename);
+      print('Loading $filename...');
+      final lines = file.readAsLinesSync();
+      final context = ScriptContext(
+        runner: runner,
+        random: random,
+        variables: {
+          'filename': filename,
+        },
+      );
+      try {
+        await context.run(lines);
+      } on ScriptError catch (e) {
+        printScriptError(lines[e.lineNumber], e);
+      }
+    }
   }
 }
