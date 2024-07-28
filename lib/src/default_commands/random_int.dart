@@ -53,12 +53,13 @@ class RandomInt extends ScriptCommand {
   ) {
     final aString = arguments[aArgument.name]!;
     final a = int.tryParse(aString);
+    const notANumber = 'Not a number';
     if (a == null) {
       throw ScriptCommandArgumentError(
         command: this,
         argument: aArgument,
         value: aString,
-        message: 'Invalid number.',
+        problem: notANumber,
       );
     }
     final bString = arguments[bArgument.name];
@@ -71,7 +72,7 @@ class RandomInt extends ScriptCommand {
         command: this,
         argument: bArgument,
         value: bString,
-        message: 'Invalid number.',
+        problem: notANumber,
       );
     }
     final lower = min(a, b);

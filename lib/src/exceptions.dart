@@ -16,12 +16,17 @@ class StupidScriptException implements Exception {
 /// There was an error with a command argument.
 class ScriptCommandArgumentError extends StupidScriptException {
   /// Create an instance.
-  const ScriptCommandArgumentError({
+  ScriptCommandArgumentError({
     required this.command,
     required this.argument,
     required this.value,
-    required super.message,
-  });
+    this.problem = 'Invalid value',
+  }) : super(
+          message:
+              'In command ${command.name}, $problem: argument ${argument.name}'
+              ' = '
+              '$value',
+        );
 
   /// The command which caused the error.
   final ScriptCommand command;
@@ -32,10 +37,8 @@ class ScriptCommandArgumentError extends StupidScriptException {
   /// The value which caused the error.
   final String value;
 
-  /// Show a suitable message.
-  @override
-  String toString() =>
-      '${command.name}: Argument ${argument.name} was given $value. $message';
+  /// The problem with [value].
+  final String problem;
 }
 
 /// No command was found.
