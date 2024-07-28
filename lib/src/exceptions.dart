@@ -52,7 +52,7 @@ class ArgumentMismatch extends StupidScriptException {
     required final ScriptCommand command,
     required final int actualNumber,
   }) : super(
-          message: 'Invalid number of arguments. ${command.name} expected '
+          message: 'Invalid number of arguments for ${command.name}. Expected '
               '${command.arguments.length}, got $actualNumber.',
         );
 }
