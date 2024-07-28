@@ -4,7 +4,7 @@ import '../script_context.dart';
 import 'script_command_argument.dart';
 
 /// A command which can be called from a script.
-abstract class ScriptCommand<T> {
+abstract class ScriptCommand {
   /// Create an instance.
   const ScriptCommand();
 
@@ -17,7 +17,7 @@ abstract class ScriptCommand<T> {
   List<String> get example;
 
   /// The function to call when this command is invoked.
-  FutureOr<T> invoke(
+  FutureOr<String?> invoke(
     final ScriptContext scriptContext,
     final Map<String, String> arguments,
   );

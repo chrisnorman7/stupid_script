@@ -6,7 +6,7 @@ import '../exceptions.dart';
 import '../script_context.dart';
 
 /// The random_int command.
-class RandomInt extends ScriptCommand<int> {
+class RandomInt extends ScriptCommand {
   /// Create an instance.
   const RandomInt();
 
@@ -41,7 +41,7 @@ class RandomInt extends ScriptCommand<int> {
 
   /// Generate random numbers.
   @override
-  int invoke(
+  String invoke(
     final ScriptContext scriptContext,
     final Map<String, String> arguments,
   ) {
@@ -61,8 +61,8 @@ class RandomInt extends ScriptCommand<int> {
     final upper = max(a, b);
     final n = scriptContext.random.nextInt(upper);
     if (lower == 0) {
-      return n;
+      return '$n';
     }
-    return lower + n;
+    return '${lower + n}';
   }
 }

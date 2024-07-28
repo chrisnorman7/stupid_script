@@ -1,11 +1,9 @@
-import 'dart:async';
-
 import '../commands/script_command.dart';
 import '../commands/script_command_argument.dart';
 import '../script_context.dart';
 
 /// The print command.
-class Print implements ScriptCommand<void> {
+class Print implements ScriptCommand {
   /// Create an instance.
   const Print();
 
@@ -26,12 +24,13 @@ class Print implements ScriptCommand<void> {
 
   /// Run this command.
   @override
-  FutureOr<void> invoke(
+  String? invoke(
     final ScriptContext scriptContext,
     final Map<String, String> arguments,
   ) {
     final text = arguments[textArgument.name]!;
-    return scriptContext.outputText(text);
+    scriptContext.outputText(text);
+    return null;
   }
 
   /// The name of this command.

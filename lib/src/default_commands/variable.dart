@@ -1,11 +1,9 @@
-import 'dart:async';
-
 import '../commands/script_command.dart';
 import '../commands/script_command_argument.dart';
 import '../script_context.dart';
 
 /// The var command.
-class Variable implements ScriptCommand<void> {
+class Variable implements ScriptCommand {
   /// Create an instance.
   const Variable();
 
@@ -42,12 +40,13 @@ class Variable implements ScriptCommand<void> {
 
   /// Invoke the command.
   @override
-  FutureOr<void> invoke(
+  String? invoke(
     final ScriptContext scriptContext,
     final Map<String, String> arguments,
   ) {
     final name = arguments[nameArgument.name]!;
     final value = arguments[valueArgument.name]!;
     scriptContext.variables[name] = value;
+    return value;
   }
 }
