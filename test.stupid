@@ -1,0 +1,2 @@
+print This script is %filename%.
+print I like the number {random_int 25}.
