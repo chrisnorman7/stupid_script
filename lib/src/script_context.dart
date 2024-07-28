@@ -16,6 +16,8 @@ class ScriptContext {
     this.comment = '#',
     this.argumentSeparator = '|',
     this.variableBracket = '%',
+    this.blockStart = '{',
+    this.blockEnd = '}',
   });
 
   /// The script runner to use.
@@ -42,6 +44,12 @@ class ScriptContext {
   /// The characters to surround variable names for expansion.
   final String variableBracket;
 
+  /// The character which starts an embedded script block.
+  final String blockStart;
+
+  /// The character which ends an embedded script block.
+  final String blockEnd;
+
   /// Run a script, line by line.
   Future<void> run(final List<String> script) async {
     for (var i = 0; i < script.length; i++) {
@@ -59,9 +67,22 @@ class ScriptContext {
   }
 
   /// Handle a single [line].
-  Future<void> handleLine(final String line) async {
+  Future<String?> handleLine(final String line) async {
     if (line.startsWith(comment)) {
-      return;
+      return null;
+    }
+    final blockEndIndex = line.lastIndexOf(blockEnd);
+    if (blockEndIndex != -1) {
+      final blockStartIndex = line.indexOf(blockStart);
+      if (blockEndIndex != -1 && blockStartIndex < blockEndIndex) {
+        final subLine = line.substring(blockStartIndex + 1, blockEndIndex);
+        final result = await handleLine(subLine);
+        final buffer = StringBuffer()
+          ..write(line.substring(0, blockStartIndex))
+          ..write(result)
+          ..write(line.substring(blockEndIndex + 1));
+        return handleLine(buffer.toString());
+      }
     }
     final index = line.indexOf(' ');
     final String commandName;
@@ -83,7 +104,7 @@ class ScriptContext {
   }
 
   /// Call [command] with [arguments].
-  Future<void> callCommand(
+  Future<String?> callCommand(
     final ScriptCommand command,
     final List<String> arguments,
   ) async {
@@ -95,7 +116,7 @@ class ScriptContext {
       final argument = command.arguments[i];
       argumentsMap[argument.name] = substituteText(arguments[i]);
     }
-    await command.invoke(this, argumentsMap);
+    return command.invoke(this, argumentsMap);
   }
 
   /// Substitute [text] with data from [variables].
