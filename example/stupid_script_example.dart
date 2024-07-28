@@ -50,11 +50,11 @@ Future<void> main(final List<String> arguments) async {
         }
         continue;
       }
-      i++;
       try {
         print(await context.handleLine(line));
-      } on ScriptError catch (e) {
-        printScriptError(line, e);
+        i++;
+      } on Exception catch (e) {
+        print(e);
       }
     }
   } else {
