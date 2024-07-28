@@ -10,15 +10,30 @@ const runner = ScriptRunner.withDefaults();
 Future<void> main(final List<String> arguments) async {
   final lines = <String>[];
   if (arguments.isEmpty) {
-    stdout.writeln('Enter script:');
+    print('Enter script:');
     var i = 0;
     while (true) {
-      i++;
-      stdout.write('Line $i> ');
+      stdout.write('Line ${i + 1}> ');
       final line = stdin.readLineSync()?.trim();
       if (line == null || line == '.') {
         break;
       }
+      if (line == '?') {
+        print('Commands:');
+        for (final command in runner.commands) {
+          print(command.name);
+          print('Arguments:');
+          for (final argument in command.arguments) {
+            print('${argument.name}: ${argument.description}');
+          }
+          print('Example:');
+          print('```');
+          command.example.forEach(print);
+          print('```');
+        }
+        continue;
+      }
+      i++;
       lines.add(line);
     }
   } else {
