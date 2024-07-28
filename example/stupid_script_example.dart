@@ -33,9 +33,15 @@ Future<void> main(final List<String> arguments) async {
         print('Commands:');
         for (final command in runner.commands) {
           print(command.name);
-          print('Arguments:');
+          print('Required Arguments:');
           for (final argument in command.arguments) {
             print('${argument.name}: ${argument.description}');
+          }
+          if (command.optionalArguments.isNotEmpty) {
+            print('Optional Arguments:');
+            for (final argument in command.optionalArguments) {
+              print('${argument.name}: ${argument.description}');
+            }
           }
           print('Example:');
           print('```');
