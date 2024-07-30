@@ -110,7 +110,13 @@ class ScriptContext {
     final arguments = argumentsString.split(argumentSeparator);
     for (final command in runner.commands) {
       if (command.name == commandName) {
-        return callCommand(command, arguments);
+        final value = callCommand(command, arguments);
+        variables['_'] = ScriptVariable(
+          name: '_',
+          type: ScriptCommandArgumentType.string,
+          value: value,
+        );
+        return value;
       }
     }
     throw CommandNotFound(commandName);
