@@ -20,7 +20,7 @@ abstract class ScriptCommand {
   /// The function to call when this command is invoked.
   FutureOr<String?> invoke(
     final ScriptContext scriptContext,
-    final Map<String, String> arguments,
+    final Map<String, dynamic> arguments,
   );
 
   /// The arguments this command accepts.

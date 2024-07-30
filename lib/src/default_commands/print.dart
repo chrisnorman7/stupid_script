@@ -31,9 +31,9 @@ class Print implements ScriptCommand {
   @override
   String? invoke(
     final ScriptContext scriptContext,
-    final Map<String, String> arguments,
+    final Map<String, dynamic> arguments,
   ) {
-    final text = arguments[textArgument.name]!;
+    final text = arguments[textArgument.name];
     scriptContext.outputText(text);
     return null;
   }

@@ -2,8 +2,11 @@ import 'dart:async';
 import 'dart:math';
 
 import 'commands/script_command.dart';
+import 'commands/script_command_argument.dart';
+import 'commands/script_command_argument_type.dart';
 import 'exceptions.dart';
 import 'script_runner.dart';
+import 'script_variable.dart';
 
 /// A context for a running script.
 class ScriptContext {
@@ -34,7 +37,7 @@ class ScriptContext {
   final Random random;
 
   /// The variables which have been created.
-  final Map<String, String> variables;
+  final Map<String, ScriptVariable> variables;
 
   /// The character(s) which signify the start of a comment..
   final String comment;
@@ -108,33 +111,69 @@ class ScriptContext {
     throw CommandNotFound(commandName);
   }
 
-  /// Call [command] with [arguments].
-  Future<String?> callCommand(
+  /// Parse a single [argument] from [value].
+  dynamic parseArgument(
+    final ScriptCommandArgument argument,
+    final String value,
+  ) {
+    final fullValue = substituteText(value);
+    final type = argument.type;
+    switch (type) {
+      case ScriptCommandArgumentType.string:
+        return fullValue;
+      case ScriptCommandArgumentType.integer:
+        final i = int.tryParse(fullValue);
+        if (i == null) {
+          throw ConversionError(value: fullValue, type: type);
+        }
+        return i;
+      case ScriptCommandArgumentType.float:
+        final d = double.tryParse(fullValue);
+        if (d == null) {
+          throw ConversionError(value: fullValue, type: type);
+        }
+        return d;
+    }
+  }
+
+  /// Returns suitable arguments for [command].
+  Map<String, dynamic> parseArguments(
     final ScriptCommand command,
     final List<String> arguments,
-  ) async {
+  ) {
     if (arguments.length < command.arguments.length) {
       throw ArgumentMismatch(command: command, actualNumber: arguments.length);
     } else if (arguments.length >
         (command.arguments.length + command.optionalArguments.length)) {
       throw ArgumentMismatch(command: command, actualNumber: arguments.length);
     }
-    final argumentsMap = <String, String>{};
+    final argumentsMap = <String, dynamic>{};
     for (var i = 0; i < command.arguments.length; i++) {
       final argument = command.arguments[i];
-      argumentsMap[argument.name] = substituteText(arguments[i]);
+      final value = arguments[i];
+      argumentsMap[argument.name] = parseArgument(argument, value);
     }
     for (var i = command.arguments.length;
         i < command.optionalArguments.length + command.arguments.length;
         i++) {
       final argument = command.optionalArguments[i - command.arguments.length];
       try {
-        argumentsMap[argument.name] = substituteText(arguments[i]);
+        argumentsMap[argument.name] = parseArgument(argument, arguments[i]);
         // ignore: avoid_catching_errors
       } on RangeError {
-        argumentsMap[argument.name] = argument.defaultValue;
+        argumentsMap[argument.name] =
+            parseArgument(argument, argument.defaultValue);
       }
     }
+    return argumentsMap;
+  }
+
+  /// Call [command] with [arguments].
+  Future<String?> callCommand(
+    final ScriptCommand command,
+    final List<String> arguments,
+  ) async {
+    final argumentsMap = parseArguments(command, arguments);
     return command.invoke(this, argumentsMap);
   }
 
@@ -151,9 +190,18 @@ class ScriptContext {
       regExp,
       (final match) {
         final variableName = match.group(2)!;
-        final variableValue = variables[variableName];
-        return variableValue ?? '<undefined>';
+        return getVariableValue(variableName);
       },
     );
+  }
+
+  /// Get the value of a [ScriptVariable] from [variables] with the given
+  /// [name].
+  dynamic getVariableValue(
+    final String name, {
+    final dynamic defaultValue = undefined,
+  }) {
+    final variable = variables[name];
+    return variable?.value ?? defaultValue;
   }
 }

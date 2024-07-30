@@ -1,7 +1,5 @@
-import '../commands/script_command.dart';
-import '../commands/script_command_argument.dart';
+import '../../stupid_script.dart';
 import '../commands/script_command_optional_argument.dart';
-import '../script_context.dart';
 
 /// The var command.
 class Variable implements ScriptCommand {
@@ -18,6 +16,13 @@ class Variable implements ScriptCommand {
   static const valueArgument = ScriptCommandArgument(
     name: 'value',
     description: 'The value to store.',
+  );
+
+  /// The type argument.
+  static final typeArgument = ScriptCommandOptionalArgument(
+    name: 'type',
+    description: 'The type of this variable',
+    defaultValue: ScriptCommandArgumentType.string.name,
   );
 
   /// The name of this command.
@@ -41,16 +46,16 @@ class Variable implements ScriptCommand {
 
   /// Optional arguments.
   @override
-  List<ScriptCommandOptionalArgument> get optionalArguments => [];
+  List<ScriptCommandOptionalArgument> get optionalArguments => [typeArgument];
 
   /// Invoke the command.
   @override
   String? invoke(
     final ScriptContext scriptContext,
-    final Map<String, String> arguments,
+    final Map<String, dynamic> arguments,
   ) {
-    final name = arguments[nameArgument.name]!;
-    final value = arguments[valueArgument.name]!;
+    final name = arguments[nameArgument.name];
+    final value = arguments[valueArgument.name];
     scriptContext.variables[name] = value;
     return value;
   }

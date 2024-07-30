@@ -1,4 +1,5 @@
 import 'script_command_argument.dart';
+import 'script_command_argument_type.dart';
 
 /// An optional [ScriptCommandArgument].
 class ScriptCommandOptionalArgument extends ScriptCommandArgument {
@@ -7,6 +8,7 @@ class ScriptCommandOptionalArgument extends ScriptCommandArgument {
     required super.name,
     required super.description,
     required this.defaultValue,
+    super.type = ScriptCommandArgumentType.string,
   });
 
   /// The default value.

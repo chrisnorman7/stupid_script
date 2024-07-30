@@ -1,4 +1,6 @@
-import '../stupid_script.dart';
+import 'commands/script_command.dart';
+import 'commands/script_command_argument.dart';
+import 'commands/script_command_argument_type.dart';
 
 /// The top-level exception.
 class StupidScriptException implements Exception {
@@ -70,6 +72,21 @@ class ArgumentMismatch extends StupidScriptException {
   /// Return the maximum number of arguments supported by [command].
   static int maxSupportedArguments(final ScriptCommand command) =>
       minSupportedArguments(command) + command.optionalArguments.length;
+}
+
+/// The given [value] could not be converted to the specified [type].
+class ConversionError extends StupidScriptException {
+  /// Create an instance.
+  ConversionError({
+    required this.value,
+    required this.type,
+  }) : super(message: 'Could not convert "$value" to type ${type.name}.');
+
+  /// The original value.
+  final String value;
+
+  /// The type which [value] was supposed to convert to.
+  final ScriptCommandArgumentType type;
 }
 
 /// A general script error occurred.
