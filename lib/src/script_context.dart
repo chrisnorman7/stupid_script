@@ -14,6 +14,7 @@ class ScriptContext {
     required this.variables,
     this.outputText = print,
     this.comment = '#',
+    this.commandSeparator = ' ',
     this.argumentSeparator = '|',
     this.variableBracket = '%',
     this.blockStart = '{',
@@ -37,6 +38,9 @@ class ScriptContext {
 
   /// The character(s) which signify the start of a comment..
   final String comment;
+
+  /// The character which separates a command from its arguments.
+  final String commandSeparator;
 
   /// The argument separator to use.
   final String argumentSeparator;
@@ -68,31 +72,32 @@ class ScriptContext {
 
   /// Handle a single [line].
   Future<String?> handleLine(final String line) async {
-    if (line.startsWith(comment)) {
+    final code = line.split(comment).first.trim();
+    if (code.isEmpty) {
       return null;
     }
-    final blockEndIndex = line.lastIndexOf(blockEnd);
+    final blockEndIndex = code.lastIndexOf(blockEnd);
     if (blockEndIndex != -1) {
-      final blockStartIndex = line.indexOf(blockStart);
+      final blockStartIndex = code.indexOf(blockStart);
       if (blockEndIndex != -1 && blockStartIndex < blockEndIndex) {
-        final subLine = line.substring(blockStartIndex + 1, blockEndIndex);
+        final subLine = code.substring(blockStartIndex + 1, blockEndIndex);
         final result = await handleLine(subLine);
         final buffer = StringBuffer()
-          ..write(line.substring(0, blockStartIndex))
+          ..write(code.substring(0, blockStartIndex))
           ..write(result)
-          ..write(line.substring(blockEndIndex + 1));
+          ..write(code.substring(blockEndIndex + 1));
         return handleLine(buffer.toString());
       }
     }
-    final index = line.indexOf(' ');
+    final index = code.indexOf(commandSeparator);
     final String commandName;
     final String argumentsString;
     if (index == -1) {
       commandName = line;
       argumentsString = '';
     } else {
-      commandName = line.substring(0, index);
-      argumentsString = line.substring(index + 1);
+      commandName = code.substring(0, index);
+      argumentsString = code.substring(index + 1);
     }
     final arguments = argumentsString.split(argumentSeparator);
     for (final command in runner.commands) {
