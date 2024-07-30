@@ -66,7 +66,12 @@ Future<void> main(final List<String> arguments) async {
         runner: runner,
         random: random,
         variables: {
-          'filename': filename,
+          'filename': ScriptVariable(
+            name: 'filename',
+            type: ScriptCommandArgumentType.string,
+            value: filename,
+          ),
+          'undefined': ScriptVariable.undefined(),
         },
       );
       try {
