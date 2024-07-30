@@ -5,6 +5,7 @@ import 'commands/script_command.dart';
 import 'commands/script_command_argument.dart';
 import 'commands/script_command_argument_type.dart';
 import 'exceptions.dart';
+import 'script_function.dart';
 import 'script_runner.dart';
 import 'script_variable.dart';
 
@@ -15,6 +16,7 @@ class ScriptContext {
     required this.runner,
     required this.random,
     required this.variables,
+    required this.functions,
     this.outputText = print,
     this.comment = '#',
     this.commandSeparator = ' ',
@@ -38,6 +40,9 @@ class ScriptContext {
 
   /// The variables which have been created.
   final Map<String, ScriptVariable> variables;
+
+  /// The functions which have been defined by the programmer.
+  final Map<String, ScriptFunction> functions;
 
   /// The character(s) which signify the start of a comment..
   final String comment;

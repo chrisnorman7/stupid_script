@@ -20,6 +20,7 @@ Future<void> main(final List<String> arguments) async {
       runner: runner,
       random: random,
       variables: {},
+      functions: {},
     );
     print('Enter script:');
     var i = 0;
@@ -73,6 +74,7 @@ Future<void> main(final List<String> arguments) async {
           ),
           'undefined': ScriptVariable.undefined(),
         },
+        functions: {},
       );
       try {
         await context.run(lines);
