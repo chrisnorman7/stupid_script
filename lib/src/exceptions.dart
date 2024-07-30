@@ -108,3 +108,37 @@ class ScriptError extends StupidScriptException {
   /// The stack trace to use.
   final StackTrace stackTrace;
 }
+
+/// The function end command was found in the wrong place.
+class NoCurrentFunction extends StupidScriptException {
+  /// Make it constant.
+  NoCurrentFunction(
+    final String functionEnd,
+  ) : super(message: 'Unexpected `$functionEnd`.');
+}
+
+/// An invalid argument type was given.
+class InvalidArgumentType extends StupidScriptException {
+  /// Create an instance.
+  InvalidArgumentType({
+    required this.typeName,
+  }) : super(message: 'Invalid type name: $typeName.');
+
+  /// The name of the supposed type which was given.
+  final String typeName;
+}
+
+/// An invalid argument definition was given.
+class InvalidArgumentDefinition extends StupidScriptException {
+  /// Create an instance.
+  InvalidArgumentDefinition({
+    required this.argumentDefinition,
+  }) : super(
+          message: 'Invalid argument type definition: $argumentDefinition. '
+              'Expected <name>:<type>, where type is one of '
+              '${ScriptCommandArgumentType.values}.',
+        );
+
+  /// The definition which was given.
+  final String argumentDefinition;
+}

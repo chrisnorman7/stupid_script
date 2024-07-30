@@ -1,13 +1,7 @@
 import 'dart:async';
 import 'dart:math';
 
-import 'commands/script_command.dart';
-import 'commands/script_command_argument.dart';
-import 'commands/script_command_argument_type.dart';
-import 'exceptions.dart';
-import 'script_function.dart';
-import 'script_runner.dart';
-import 'script_variable.dart';
+import '../stupid_script.dart';
 
 /// A context for a running script.
 class ScriptContext {
@@ -24,6 +18,7 @@ class ScriptContext {
     this.variableBracket = '%',
     this.blockStart = '{',
     this.blockEnd = '}',
+    this.functionEnd = 'end',
   });
 
   /// The script runner to use.
@@ -42,7 +37,7 @@ class ScriptContext {
   final Map<String, ScriptVariable> variables;
 
   /// The functions which have been defined by the programmer.
-  final Map<String, ScriptFunction> functions;
+  final List<ScriptFunction> functions;
 
   /// The character(s) which signify the start of a comment..
   final String comment;
@@ -61,6 +56,12 @@ class ScriptContext {
 
   /// The character which ends an embedded script block.
   final String blockEnd;
+
+  /// The string which signifies the end of a function.
+  final String functionEnd;
+
+  /// The function which is currently being added to.
+  ScriptFunction? scriptFunction;
 
   /// Run a script, line by line.
   Future<void> run(final List<String> script) async {
@@ -82,6 +83,20 @@ class ScriptContext {
   Future<String?> handleLine(final String line) async {
     final code = line.split(comment).first.trim();
     if (code.isEmpty) {
+      return null;
+    }
+    final function = scriptFunction;
+    if (code == functionEnd) {
+      if (function == null) {
+        throw NoCurrentFunction(functionEnd);
+      } else {
+        functions.add(function);
+        scriptFunction = null;
+      }
+      return null;
+    }
+    if (function != null) {
+      function.lines.add(line);
       return null;
     }
     final blockEndIndex = code.lastIndexOf(blockEnd);
@@ -108,7 +123,7 @@ class ScriptContext {
       argumentsString = code.substring(index + 1);
     }
     final arguments = argumentsString.split(argumentSeparator);
-    for (final command in runner.commands) {
+    for (final command in getAllCommands) {
       if (command.name == commandName) {
         final value = callCommand(command, arguments);
         variables['_'] = ScriptVariable(
@@ -121,6 +136,12 @@ class ScriptContext {
     }
     throw CommandNotFound(commandName);
   }
+
+  /// Get all commands, including [functions].
+  List<ScriptCommand> get getAllCommands => [
+        ...runner.commands,
+        ...functions.map(ScriptFunctionCommand.new),
+      ];
 
   /// Parse a single [argument] from [value].
   dynamic parseArgument(

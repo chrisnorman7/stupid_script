@@ -20,19 +20,25 @@ Future<void> main(final List<String> arguments) async {
       runner: runner,
       random: random,
       variables: {},
-      functions: {},
+      functions: [],
     );
     print('Enter script:');
     var i = 0;
     while (true) {
-      stdout.write('Line ${i + 1}> ');
+      stdout.write('Line ${i + 1}');
+      final function = context.scriptFunction;
+      if (function != null) {
+        stdout.write(' (${function.name})# ');
+      } else {
+        stdout.write('> ');
+      }
       final line = stdin.readLineSync()?.trim();
       if (line == null || line == '.') {
         break;
       }
       if (line == '?') {
         print('Commands:');
-        for (final command in runner.commands) {
+        for (final command in context.getAllCommands) {
           print(command.name);
           print('Required Arguments:');
           for (final argument in command.arguments) {
@@ -74,7 +80,7 @@ Future<void> main(final List<String> arguments) async {
           ),
           'undefined': ScriptVariable.undefined(),
         },
-        functions: {},
+        functions: [],
       );
       try {
         await context.run(lines);

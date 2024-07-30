@@ -18,7 +18,7 @@ void main() {
             variables: {
               'undefined': ScriptVariable.undefined(),
             },
-            functions: {},
+            functions: [],
           );
           expect(context.argumentSeparator, '|');
           expect(context.blockEnd, '}');

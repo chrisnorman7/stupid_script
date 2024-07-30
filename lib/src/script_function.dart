@@ -1,5 +1,4 @@
 import 'commands/script_command_argument.dart';
-import 'script_variable.dart';
 
 /// A function in a script.
 ///
@@ -11,7 +10,6 @@ class ScriptFunction {
     required this.name,
     required this.arguments,
     required this.lines,
-    required this.variables,
   });
 
   /// The name of this function.
@@ -22,7 +20,4 @@ class ScriptFunction {
 
   /// The lines of code for this function.
   final List<String> lines;
-
-  /// The variables which are assigned to this block.
-  final List<ScriptVariable> variables;
 }

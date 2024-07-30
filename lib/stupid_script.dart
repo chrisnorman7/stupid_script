@@ -7,6 +7,7 @@ library;
 export 'src/commands/script_command.dart';
 export 'src/commands/script_command_argument.dart';
 export 'src/commands/script_command_argument_type.dart';
+export 'src/commands/script_function_command.dart';
 export 'src/default_commands/print.dart';
 export 'src/default_commands/random_int.dart';
 export 'src/default_commands/variable.dart';
