@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import '../script_context.dart';
-import 'script_command_argument.dart';
-import 'script_command_optional_argument.dart';
+import 'arguments/script_command_argument.dart';
+import 'arguments/script_command_optional_argument.dart';
 
 /// A command which can be called from a script.
-abstract class ScriptCommand {
+abstract class ScriptCommand<T> {
   /// Create an instance.
   const ScriptCommand();
 
@@ -18,7 +18,7 @@ abstract class ScriptCommand {
   List<String> get example;
 
   /// The function to call when this command is invoked.
-  FutureOr<String?> invoke(
+  FutureOr<T?> invoke(
     final ScriptContext scriptContext,
     final Map<String, dynamic> arguments,
   );

@@ -1,4 +1,4 @@
-import 'script_command.dart';
+import '../script_command.dart';
 import 'script_command_argument_type.dart';
 
 /// An argument for a [ScriptCommand].

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import '../../stupid_script.dart';
-import 'script_command_optional_argument.dart';
+import 'arguments/script_command_optional_argument.dart';
 
 /// A function which has been converted to a command.
 class ScriptFunctionCommand implements ScriptCommand {

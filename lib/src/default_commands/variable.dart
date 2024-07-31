@@ -1,8 +1,8 @@
 import '../../stupid_script.dart';
-import '../commands/script_command_optional_argument.dart';
+import '../commands/arguments/script_command_optional_argument.dart';
 
 /// The var command.
-class Variable implements ScriptCommand {
+class Variable extends ScriptCommand<String> {
   /// Create an instance.
   const Variable();
 

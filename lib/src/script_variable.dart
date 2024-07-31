@@ -1,4 +1,4 @@
-import 'commands/script_command_argument_type.dart';
+import 'commands/arguments/script_command_argument_type.dart';
 
 /// A variable in a script.
 class ScriptVariable {

@@ -1,4 +1,4 @@
-import 'commands/script_command_argument.dart';
+import 'commands/arguments/script_command_argument.dart';
 
 /// A function in a script.
 ///

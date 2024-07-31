@@ -80,7 +80,7 @@ class ScriptContext {
   }
 
   /// Handle a single [line].
-  Future<String?> handleLine(final String line) async {
+  Future<dynamic> handleLine(final String line) async {
     final code = line.split(comment).first.trim();
     if (code.isEmpty) {
       return null;
@@ -201,7 +201,7 @@ class ScriptContext {
   }
 
   /// Call [command] with [arguments].
-  Future<String?> callCommand(
+  Future<dynamic> callCommand(
     final ScriptCommand command,
     final List<String> arguments,
   ) async {

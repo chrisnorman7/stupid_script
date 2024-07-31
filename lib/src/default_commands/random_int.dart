@@ -1,13 +1,13 @@
 import 'dart:math';
 
+import '../commands/arguments/script_command_argument.dart';
+import '../commands/arguments/script_command_argument_type.dart';
+import '../commands/arguments/script_command_optional_argument.dart';
 import '../commands/script_command.dart';
-import '../commands/script_command_argument.dart';
-import '../commands/script_command_argument_type.dart';
-import '../commands/script_command_optional_argument.dart';
 import '../script_context.dart';
 
 /// The random_int command.
-class RandomInt extends ScriptCommand {
+class RandomInt extends ScriptCommand<int> {
   /// Create an instance.
   const RandomInt();
 
@@ -49,21 +49,21 @@ class RandomInt extends ScriptCommand {
 
   /// Generate random numbers.
   @override
-  String invoke(
+  int invoke(
     final ScriptContext scriptContext,
     final Map<String, dynamic> arguments,
   ) {
     final a = arguments[aArgument.name] as int;
     final b = arguments[bArgument.name] as int;
     if (b == 0) {
-      return '${scriptContext.random.nextInt(a)}';
+      return scriptContext.random.nextInt(a);
     }
     final lower = min(a, b);
     final upper = max(a, b);
     final n = scriptContext.random.nextInt(upper);
     if (lower == 0) {
-      return '$n';
+      return n;
     }
-    return '${lower + n}';
+    return lower + n;
   }
 }

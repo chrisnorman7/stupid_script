@@ -1,10 +1,10 @@
+import '../commands/arguments/script_command_argument.dart';
+import '../commands/arguments/script_command_optional_argument.dart';
 import '../commands/script_command.dart';
-import '../commands/script_command_argument.dart';
-import '../commands/script_command_optional_argument.dart';
 import '../script_context.dart';
 
 /// The print command.
-class Print implements ScriptCommand {
+class Print extends ScriptCommand<void> {
   /// Create an instance.
   const Print();
 
@@ -29,13 +29,12 @@ class Print implements ScriptCommand {
 
   /// Run this command.
   @override
-  String? invoke(
+  void invoke(
     final ScriptContext scriptContext,
     final Map<String, dynamic> arguments,
   ) {
     final text = arguments[textArgument.name];
     scriptContext.outputText(text);
-    return null;
   }
 
   /// The name of this command.

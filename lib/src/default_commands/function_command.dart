@@ -1,15 +1,15 @@
 import 'dart:async';
 
+import '../commands/arguments/script_command_argument.dart';
+import '../commands/arguments/script_command_argument_type.dart';
+import '../commands/arguments/script_command_optional_argument.dart';
 import '../commands/script_command.dart';
-import '../commands/script_command_argument.dart';
-import '../commands/script_command_argument_type.dart';
-import '../commands/script_command_optional_argument.dart';
 import '../exceptions.dart';
 import '../script_context.dart';
 import '../script_function.dart';
 
 /// The function command.
-class FunctionCommand implements ScriptCommand {
+class FunctionCommand extends ScriptCommand<String> {
   /// Create an instance.
   const FunctionCommand();
 

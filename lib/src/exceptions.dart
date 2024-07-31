@@ -1,6 +1,6 @@
+import 'commands/arguments/script_command_argument.dart';
+import 'commands/arguments/script_command_argument_type.dart';
 import 'commands/script_command.dart';
-import 'commands/script_command_argument.dart';
-import 'commands/script_command_argument_type.dart';
 
 /// The top-level exception.
 class StupidScriptException implements Exception {
