@@ -68,24 +68,21 @@ Future<void> main(final List<String> arguments) async {
     for (final filename in arguments) {
       final file = File(filename);
       print('Loading $filename...');
-      final lines = file.readAsLinesSync();
-      final context = ScriptContext(
-        runner: runner,
-        random: random,
-        variables: {
-          'filename': ScriptVariable(
-            name: 'filename',
-            type: ScriptCommandArgumentType.string,
-            value: filename,
-          ),
-          'undefined': ScriptVariable.undefined(),
-        },
-        functions: [],
-      );
+      final script = file.readAsLinesSync();
       try {
-        await context.run(lines);
+        await runner.runScript(
+          script,
+          random: random,
+          variables: [
+            ScriptVariable(
+              name: 'filename',
+              type: ScriptCommandArgumentType.string,
+              value: filename,
+            ),
+          ],
+        );
       } on ScriptError catch (e) {
-        printScriptError(lines[e.lineNumber], e);
+        printScriptError(script[e.lineNumber], e);
       }
     }
   }
