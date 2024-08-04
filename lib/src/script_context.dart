@@ -123,18 +123,17 @@ class ScriptContext {
       argumentsString = code.substring(index + 1);
     }
     final arguments = argumentsString.split(argumentSeparator);
-    for (final command in getAllCommands) {
-      if (command.name == commandName) {
-        final value = callCommand(command, arguments);
-        variables['_'] = ScriptVariable(
-          name: '_',
-          type: ScriptCommandArgumentType.string,
-          value: value,
-        );
-        return value;
-      }
+    final command = runner.commandsMap[commandName];
+    if (command == null) {
+      throw CommandNotFound(commandName);
     }
-    throw CommandNotFound(commandName);
+    final value = callCommand(command, arguments);
+    variables['_'] = ScriptVariable(
+      name: '_',
+      type: ScriptCommandArgumentType.string,
+      value: value,
+    );
+    return value;
   }
 
   /// Get all commands, including [functions].
