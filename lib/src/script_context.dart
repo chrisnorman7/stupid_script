@@ -24,7 +24,7 @@ class ScriptContext {
   ScriptFunction? scriptFunction;
 
   /// Run a script, line by line.
-  Future<void> run(final List<String> script) async {
+  Future<void> handleLines(final List<String> script) async {
     for (var i = 0; i < script.length; i++) {
       final line = script[i];
       try {
@@ -72,15 +72,15 @@ class ScriptContext {
         return handleLine(buffer.toString());
       }
     }
-    final index = code.indexOf(runner.commandSeparator);
+    final commandEnd = code.indexOf(runner.commandSeparator);
     final String commandName;
     final String argumentsString;
-    if (index == -1) {
+    if (commandEnd == -1) {
       commandName = line;
       argumentsString = '';
     } else {
-      commandName = code.substring(0, index);
-      argumentsString = code.substring(index + 1);
+      commandName = code.substring(0, commandEnd);
+      argumentsString = code.substring(commandEnd + 1);
     }
     var arguments = argumentsString.split(runner.argumentSeparator);
     if (arguments.length == 1 && arguments.single.isEmpty) {
@@ -126,23 +126,24 @@ class ScriptContext {
       throw ArgumentMismatch(command: command, actualNumber: arguments.length);
     }
     final argumentsMap = <String, dynamic>{};
-    for (var i = 0; i < command.arguments.length; i++) {
+    for (var i = 0; i < minArguments; i++) {
       final argument = command.arguments[i];
       final value = arguments[i];
       argumentsMap[argument.name] = parseArgument(argument, value);
     }
-    for (var i = command.arguments.length;
-        i < command.optionalArguments.length + command.arguments.length;
-        i++) {
+    for (var i = minArguments; i < maxArguments; i++) {
       final argument = command.optionalArguments[i - command.arguments.length];
+      dynamic value;
       try {
-        argumentsMap[argument.name] = parseArgument(argument, arguments[i]);
+        value = parseArgument(argument, arguments[i]);
         // ignore: avoid_catching_errors
       } on RangeError {
-        argumentsMap[argument.name] = parseArgument(
+        value = parseArgument(
           argument,
           argument.defaultValue,
         );
+      } finally {
+        argumentsMap[argument.name] = value;
       }
     }
     return argumentsMap;
@@ -164,12 +165,12 @@ class ScriptContext {
     }
     final variableNames = variables.keys.join('|');
     final regExp = RegExp(
-      '([^${runner.escapeChar}][${runner.variableBracket}]($variableNames))',
+      '(?<!\\\\)${runner.variableBracket}($variableNames)',
     );
     return text.replaceAllMapped(
       regExp,
       (final match) {
-        final variableName = match.group(2)!;
+        final variableName = match.group(match.groupCount)!;
         return getVariableValue(variableName);
       },
     );

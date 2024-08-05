@@ -45,7 +45,7 @@ class ScriptFunctionCommand implements ScriptCommand {
       variables: variables,
       functions: scriptContext.functions,
     );
-    await subContext.run(scriptFunction.lines);
+    await subContext.handleLines(scriptFunction.lines);
     return null;
   }
 

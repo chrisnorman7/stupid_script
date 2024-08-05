@@ -16,7 +16,6 @@ class ScriptRunner {
     required this.commands,
     required this.types,
     required this.random,
-    this.escapeChar = r'\',
     this.comment = '#',
     this.commandSeparator = ' ',
     this.argumentSeparator = '|',
@@ -29,7 +28,6 @@ class ScriptRunner {
   /// Create a default instance.
   const ScriptRunner.withDefaults({
     required this.random,
-    this.escapeChar = r'\',
     this.comment = '#',
     this.commandSeparator = ' ',
     this.argumentSeparator = '|',
@@ -53,9 +51,6 @@ class ScriptRunner {
   /// The map of types.
   Map<String, DataType<dynamic>> get typesMap =>
       {for (final type in types) type.name: type};
-
-  /// The escape character used in scripts.
-  final String escapeChar;
 
   /// The character(s) which signify the start of a comment..
   final String comment;
@@ -92,7 +87,7 @@ class ScriptRunner {
       variables: {for (final variable in variables) variable.name: variable},
       functions: functions ?? [],
     );
-    return context.run(script);
+    return context.handleLines(script);
   }
 
   /// Get the type of [value].
