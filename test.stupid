@@ -1,8 +1,8 @@
 function print_line|line_number:The line number to show.:integer,text:The text to show.
-  print [%line_number%]: %text%
+  print [%line_number]: %text
 end
-print This script is %filename%.
+print This script is %filename.
 print A child is {random_int 19}.
 print An adult is {random_int 25|18}.
 print The next line will throw an error.
-random_int tits
+random_int forty-five
