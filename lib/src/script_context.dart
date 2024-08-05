@@ -30,22 +30,6 @@ class ScriptContext {
   /// The function which is currently being added to.
   ScriptFunction? scriptFunction;
 
-  /// Run a script, line by line.
-  Future<void> handleLines(final List<String> script) async {
-    for (var i = 0; i < script.length; i++) {
-      final line = script[i];
-      try {
-        await handleLine(line);
-      } on Exception catch (e, s) {
-        throw ScriptError(
-          lineNumber: i,
-          exception: e,
-          stackTrace: s,
-        );
-      }
-    }
-  }
-
   /// Handle a single [line].
   Future<dynamic> handleLine(final String line) async {
     final code = line.split(runner.comment).first.trim();
@@ -112,6 +96,22 @@ class ScriptContext {
       value: value,
     );
     return value;
+  }
+
+  /// Run [script], line by line.
+  Future<void> handleLines(final List<String> script) async {
+    for (var i = 0; i < script.length; i++) {
+      final line = script[i];
+      try {
+        await handleLine(line);
+      } on Exception catch (e, s) {
+        throw ScriptError(
+          lineNumber: i,
+          exception: e,
+          stackTrace: s,
+        );
+      }
+    }
   }
 
   /// Get all commands, including [functions].
