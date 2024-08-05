@@ -5,7 +5,6 @@
 library;
 
 export 'src/commands/arguments/script_command_argument.dart';
-export 'src/commands/arguments/script_command_argument_type.dart';
 export 'src/commands/script_command.dart';
 export 'src/commands/script_function_command.dart';
 export 'src/data_type.dart';
@@ -13,6 +12,10 @@ export 'src/default_commands/function_command.dart';
 export 'src/default_commands/print.dart';
 export 'src/default_commands/random_int.dart';
 export 'src/default_commands/variable.dart';
+export 'src/default_commands/variables.dart';
+export 'src/default_types/double_data_type.dart';
+export 'src/default_types/int_data_type.dart';
+export 'src/default_types/null_data_type.dart';
 export 'src/default_types/string_data_type.dart';
 export 'src/exceptions.dart';
 export 'src/script_context.dart';

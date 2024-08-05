@@ -10,19 +10,22 @@ class Variable extends ScriptCommand<String> {
   static const nameArgument = ScriptCommandArgument(
     name: 'name',
     description: 'The name of the variable to create.',
+    type: StringDataType(),
   );
 
   /// The value argument.
   static const valueArgument = ScriptCommandArgument(
     name: 'value',
     description: 'The value to store.',
+    type: StringDataType(),
   );
 
   /// The type argument.
   static final typeArgument = ScriptCommandOptionalArgument(
     name: 'type',
     description: 'The type of this variable',
-    defaultValue: ScriptCommandArgumentType.string.name,
+    type: const StringDataType(),
+    defaultValue: const StringDataType().name,
   );
 
   /// The name of this command.

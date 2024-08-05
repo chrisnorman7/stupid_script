@@ -34,20 +34,11 @@ class ScriptFunctionCommand implements ScriptCommand {
       variables[variable.name] = variable;
     }
     for (final MapEntry(key: name, value: value) in arguments.entries) {
-      final ScriptCommandArgumentType type;
-      if (value is int) {
-        type = ScriptCommandArgumentType.integer;
-      } else if (value is double) {
-        type = ScriptCommandArgumentType.float;
-      } else if (value is String || value == undefined) {
-        type = ScriptCommandArgumentType.string;
-      } else {
-        throw UnimplementedError(
-          'This should not happen. Tried to find type of variable $name '
-          'is $value (${value.runtimeType}).',
-        );
-      }
-      variables[name] = ScriptVariable(name: name, type: type, value: value);
+      variables[name] = ScriptVariable(
+        name: name,
+        type: scriptContext.runner.getValueType(value),
+        value: value,
+      );
     }
     final subContext = ScriptContext(
       runner: scriptContext.runner,

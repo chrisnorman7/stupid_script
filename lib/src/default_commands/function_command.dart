@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import '../commands/arguments/script_command_argument.dart';
-import '../commands/arguments/script_command_argument_type.dart';
 import '../commands/arguments/script_command_optional_argument.dart';
 import '../commands/script_command.dart';
+import '../data_type.dart';
+import '../default_types/string_data_type.dart';
 import '../exceptions.dart';
 import '../script_context.dart';
 import '../script_function.dart';
@@ -17,6 +18,7 @@ class FunctionCommand extends ScriptCommand<String> {
   static const ScriptCommandArgument nameArgument = ScriptCommandArgument(
     name: 'name',
     description: 'The name of the new function.',
+    type: StringDataType(),
   );
 
   /// The arguments argument.
@@ -24,6 +26,7 @@ class FunctionCommand extends ScriptCommand<String> {
       ScriptCommandOptionalArgument(
     name: 'arguments',
     description: 'The arguments to add to this function.',
+    type: StringDataType(),
     defaultValue: '',
   );
 
@@ -52,25 +55,28 @@ class FunctionCommand extends ScriptCommand<String> {
       final values = string.split(':');
       final argumentName = values.first;
       final String description;
-      final ScriptCommandArgumentType argumentType;
+      final DataType argumentType;
       if (values.length == 1) {
         description = 'The $argumentName argument.';
-        argumentType = ScriptCommandArgumentType.string;
+        argumentType = const StringDataType();
       } else if (values.length == 2) {
         description = values.last;
-        argumentType = ScriptCommandArgumentType.string;
+        argumentType = const StringDataType();
       } else if (values.length == 3) {
         description = values[1];
         final typeName = values.last;
         try {
-          argumentType = ScriptCommandArgumentType.values
+          argumentType = scriptContext.runner.types
               .firstWhere((final type) => type.name == typeName);
           // ignore: avoid_catching_errors
         } on StateError {
-          throw InvalidArgumentType(typeName: typeName);
+          throw InvalidArgumentTypeName(typeName: typeName);
         }
       } else {
-        throw InvalidArgumentDefinition(argumentDefinition: string);
+        throw InvalidArgumentDefinition(
+          runner: scriptContext.runner,
+          argumentDefinition: string,
+        );
       }
       return ScriptCommandArgument(
         name: argumentName,

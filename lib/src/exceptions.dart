@@ -1,6 +1,7 @@
 import 'commands/arguments/script_command_argument.dart';
-import 'commands/arguments/script_command_argument_type.dart';
 import 'commands/script_command.dart';
+import 'data_type.dart';
+import 'script_runner.dart';
 
 /// The top-level exception.
 class StupidScriptException implements Exception {
@@ -86,7 +87,7 @@ class ConversionError extends StupidScriptException {
   final String value;
 
   /// The type which [value] was supposed to convert to.
-  final ScriptCommandArgumentType type;
+  final DataType type;
 }
 
 /// A general script error occurred.
@@ -117,10 +118,10 @@ class NoCurrentFunction extends StupidScriptException {
   ) : super(message: 'Unexpected `$functionEnd`.');
 }
 
-/// An invalid argument type was given.
-class InvalidArgumentType extends StupidScriptException {
+/// An invalid name was given for an argument type.
+class InvalidArgumentTypeName extends StupidScriptException {
   /// Create an instance.
-  InvalidArgumentType({
+  InvalidArgumentTypeName({
     required this.typeName,
   }) : super(message: 'Invalid type name: $typeName.');
 
@@ -132,13 +133,24 @@ class InvalidArgumentType extends StupidScriptException {
 class InvalidArgumentDefinition extends StupidScriptException {
   /// Create an instance.
   InvalidArgumentDefinition({
+    required final ScriptRunner runner,
     required this.argumentDefinition,
   }) : super(
           message: 'Invalid argument type definition: $argumentDefinition. '
               'Expected <name>:<type>, where type is one of '
-              '${ScriptCommandArgumentType.values}.',
+              '${runner.types}.',
         );
 
   /// The definition which was given.
   final String argumentDefinition;
+}
+
+/// Could not determine the type of [value].
+class UnknownType extends StupidScriptException {
+  /// Create an instance.
+  UnknownType(this.value)
+      : super(message: 'Could not determine the type of `$value`.');
+
+  /// The value which could not be converted.
+  final dynamic value;
 }

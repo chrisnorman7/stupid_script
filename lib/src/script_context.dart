@@ -82,7 +82,10 @@ class ScriptContext {
       commandName = code.substring(0, index);
       argumentsString = code.substring(index + 1);
     }
-    final arguments = argumentsString.split(runner.argumentSeparator);
+    var arguments = argumentsString.split(runner.argumentSeparator);
+    if (arguments.length == 1 && arguments.single.isEmpty) {
+      arguments = [];
+    }
     final command = runner.commandsMap[commandName];
     if (command == null) {
       throw CommandNotFound(commandName);
@@ -90,7 +93,7 @@ class ScriptContext {
     final value = await callCommand(command, arguments);
     variables['_'] = ScriptVariable(
       name: '_',
-      type: ScriptCommandArgumentType.string,
+      type: runner.getValueType(value),
       value: value,
     );
     return value;
@@ -109,22 +112,7 @@ class ScriptContext {
   ) {
     final fullValue = substituteText(value);
     final type = argument.type;
-    switch (type) {
-      case ScriptCommandArgumentType.string:
-        return fullValue;
-      case ScriptCommandArgumentType.integer:
-        final i = int.tryParse(fullValue);
-        if (i == null) {
-          throw ConversionError(value: fullValue, type: type);
-        }
-        return i;
-      case ScriptCommandArgumentType.float:
-        final d = double.tryParse(fullValue);
-        if (d == null) {
-          throw ConversionError(value: fullValue, type: type);
-        }
-        return d;
-    }
+    return type.fromRawValue(fullValue);
   }
 
   /// Returns suitable arguments for [command].
@@ -132,10 +120,9 @@ class ScriptContext {
     final ScriptCommand command,
     final List<String> arguments,
   ) {
-    if (arguments.length < command.arguments.length) {
-      throw ArgumentMismatch(command: command, actualNumber: arguments.length);
-    } else if (arguments.length >
-        (command.arguments.length + command.optionalArguments.length)) {
+    final minArguments = command.arguments.length;
+    final maxArguments = minArguments + command.optionalArguments.length;
+    if (arguments.length < minArguments || arguments.length > maxArguments) {
       throw ArgumentMismatch(command: command, actualNumber: arguments.length);
     }
     final argumentsMap = <String, dynamic>{};
@@ -152,8 +139,10 @@ class ScriptContext {
         argumentsMap[argument.name] = parseArgument(argument, arguments[i]);
         // ignore: avoid_catching_errors
       } on RangeError {
-        argumentsMap[argument.name] =
-            parseArgument(argument, argument.defaultValue);
+        argumentsMap[argument.name] = parseArgument(
+          argument,
+          argument.defaultValue,
+        );
       }
     }
     return argumentsMap;

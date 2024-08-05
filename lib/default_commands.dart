@@ -6,4 +6,5 @@ const defaultCommands = <ScriptCommand>[
   Print(),
   RandomInt(),
   Variable(),
+  Variables(),
 ];

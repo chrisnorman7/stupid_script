@@ -4,6 +4,7 @@ import '../default_commands.dart';
 import '../default_types.dart';
 import 'commands/script_command.dart';
 import 'data_type.dart';
+import 'exceptions.dart';
 import 'script_context.dart';
 import 'script_function.dart';
 import 'script_variable.dart';
@@ -92,5 +93,15 @@ class ScriptRunner {
       functions: functions ?? [],
     );
     return context.run(script);
+  }
+
+  /// Get the type of [value].
+  DataType getValueType(final dynamic value) {
+    for (final type in types) {
+      if (type.valueMatches(value)) {
+        return type;
+      }
+    }
+    throw UnknownType(value);
   }
 }

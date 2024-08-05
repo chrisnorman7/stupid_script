@@ -1,5 +1,5 @@
+import '../../data_type.dart';
 import '../script_command.dart';
-import 'script_command_argument_type.dart';
 
 /// An argument for a [ScriptCommand].
 class ScriptCommandArgument {
@@ -7,7 +7,7 @@ class ScriptCommandArgument {
   const ScriptCommandArgument({
     required this.name,
     required this.description,
-    this.type = ScriptCommandArgumentType.string,
+    required this.type,
   });
 
   /// The name of this argument.
@@ -17,5 +17,5 @@ class ScriptCommandArgument {
   final String description;
 
   /// The type of this argument.
-  final ScriptCommandArgumentType type;
+  final DataType type;
 }

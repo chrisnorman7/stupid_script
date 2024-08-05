@@ -2,6 +2,7 @@
 import '../commands/arguments/script_command_argument.dart';
 import '../commands/arguments/script_command_optional_argument.dart';
 import '../commands/script_command.dart';
+import '../default_types/string_data_type.dart';
 import '../script_context.dart';
 
 /// The print command.
@@ -10,8 +11,11 @@ class Print extends ScriptCommand<void> {
   const Print();
 
   /// The text argument.
-  static const textArgument =
-      ScriptCommandArgument(name: 'text', description: 'The text to print.');
+  static const textArgument = ScriptCommandArgument(
+    name: 'text',
+    description: 'The text to print.',
+    type: StringDataType(),
+  );
 
   /// The arguments.
   @override

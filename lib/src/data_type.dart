@@ -1,20 +1,21 @@
 import '../src/script_runner.dart';
 
 /// A type which can be supported by a [ScriptRunner].
-class DataType<T> {
+abstract class DataType<T> {
   /// Create an instance.
   const DataType({
     required this.name,
-    required this.fromRawValue,
-    required this.toRawValue,
   });
 
   /// The name of this type.
   final String name;
 
   /// The function which converts raw values to the correct type.
-  final T Function(String value) fromRawValue;
+  T fromRawValue(final String value);
 
   /// The function which will convert instances of this type to a raw value.
-  final String Function(T value) toRawValue;
+  String toRawValue(final T value);
+
+  /// Returns `true` if [value] is of type [T}.
+  bool valueMatches(final dynamic value) => value is T;
 }

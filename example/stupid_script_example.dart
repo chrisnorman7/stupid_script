@@ -5,9 +5,14 @@ import 'dart:math';
 import 'package:stupid_script/stupid_script.dart';
 
 /// Pretty print a script [error].
-void printScriptError(final String line, final ScriptError error) {
+void printScriptError(
+  final String line,
+  final ScriptError error,
+  final StackTrace s,
+) {
   print('Error on line ${error.lineNumber + 1}: $line:');
   print(error.exception);
+  print(s);
 }
 
 /// The main entry point.
@@ -73,13 +78,13 @@ Future<void> main(final List<String> arguments) async {
           variables: [
             ScriptVariable(
               name: 'filename',
-              type: ScriptCommandArgumentType.string,
+              type: const StringDataType(),
               value: filename,
             ),
           ],
         );
       } on ScriptError catch (e) {
-        printScriptError(script[e.lineNumber], e);
+        printScriptError(script[e.lineNumber], e, e.stackTrace);
       }
     }
   }

@@ -1,9 +1,9 @@
 import 'dart:math';
 
 import '../commands/arguments/script_command_argument.dart';
-import '../commands/arguments/script_command_argument_type.dart';
 import '../commands/arguments/script_command_optional_argument.dart';
 import '../commands/script_command.dart';
+import '../default_types/int_data_type.dart';
 import '../script_context.dart';
 
 /// The random_int command.
@@ -15,14 +15,14 @@ class RandomInt extends ScriptCommand<int> {
   static const ScriptCommandArgument aArgument = ScriptCommandArgument(
     name: 'a',
     description: 'One end of the possible range of numbers.',
-    type: ScriptCommandArgumentType.integer,
+    type: IntDataType(),
   );
 
   /// The b argument.
   static const bArgument = ScriptCommandOptionalArgument(
     name: 'b',
     description: 'One end of the possible range of numbers.',
-    type: ScriptCommandArgumentType.integer,
+    type: IntDataType(),
     defaultValue: '0',
   );
 
