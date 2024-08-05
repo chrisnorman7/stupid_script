@@ -4,8 +4,6 @@ import 'dart:math';
 
 import 'package:stupid_script/stupid_script.dart';
 
-const runner = ScriptRunner.withDefaults();
-
 /// Pretty print a script [error].
 void printScriptError(final String line, final ScriptError error) {
   print('Error on line ${error.lineNumber + 1}: $line:');
@@ -15,10 +13,10 @@ void printScriptError(final String line, final ScriptError error) {
 /// The main entry point.
 Future<void> main(final List<String> arguments) async {
   final random = Random();
+  final runner = ScriptRunner.withDefaults(random: random);
   if (arguments.isEmpty) {
     final context = ScriptContext(
       runner: runner,
-      random: random,
       variables: {},
       functions: [],
     );
@@ -72,7 +70,6 @@ Future<void> main(final List<String> arguments) async {
       try {
         await runner.runScript(
           script,
-          random: random,
           variables: [
             ScriptVariable(
               name: 'filename',

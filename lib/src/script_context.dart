@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import '../stupid_script.dart';
 
@@ -8,57 +7,18 @@ class ScriptContext {
   /// Create an instance.
   ScriptContext({
     required this.runner,
-    required this.random,
     required this.variables,
     required this.functions,
-    this.outputText = print,
-    this.comment = '#',
-    this.commandSeparator = ' ',
-    this.argumentSeparator = '|',
-    this.variableBracket = '%',
-    this.blockStart = '{',
-    this.blockEnd = '}',
-    this.functionEnd = 'end',
   });
 
   /// The script runner to use.
   final ScriptRunner runner;
-
-  /// The function to call to output text.
-  ///
-  /// The [outputText] function will default to [print], but should probably be
-  /// changed to use the [logging](https://pub.dev/packages/logging) package.
-  final FutureOr<void> Function(String) outputText;
-
-  /// The random number generator to use.
-  final Random random;
 
   /// The variables which have been created.
   final Map<String, ScriptVariable> variables;
 
   /// The functions which have been defined by the programmer.
   final List<ScriptFunction> functions;
-
-  /// The character(s) which signify the start of a comment..
-  final String comment;
-
-  /// The character which separates a command from its arguments.
-  final String commandSeparator;
-
-  /// The argument separator to use.
-  final String argumentSeparator;
-
-  /// The characters to surround variable names for expansion.
-  final String variableBracket;
-
-  /// The character which starts an embedded script block.
-  final String blockStart;
-
-  /// The character which ends an embedded script block.
-  final String blockEnd;
-
-  /// The string which signifies the end of a function.
-  final String functionEnd;
 
   /// The function which is currently being added to.
   ScriptFunction? scriptFunction;
@@ -81,14 +41,14 @@ class ScriptContext {
 
   /// Handle a single [line].
   Future<dynamic> handleLine(final String line) async {
-    final code = line.split(comment).first.trim();
+    final code = line.split(runner.comment).first.trim();
     if (code.isEmpty) {
       return null;
     }
     final function = scriptFunction;
-    if (code == functionEnd) {
+    if (code == runner.functionEnd) {
       if (function == null) {
-        throw NoCurrentFunction(functionEnd);
+        throw NoCurrentFunction(runner.functionEnd);
       } else {
         functions.add(function);
         scriptFunction = null;
@@ -99,9 +59,9 @@ class ScriptContext {
       function.lines.add(line);
       return null;
     }
-    final blockEndIndex = code.lastIndexOf(blockEnd);
+    final blockEndIndex = code.lastIndexOf(runner.blockEnd);
     if (blockEndIndex != -1) {
-      final blockStartIndex = code.indexOf(blockStart);
+      final blockStartIndex = code.indexOf(runner.blockStart);
       if (blockEndIndex != -1 && blockStartIndex < blockEndIndex) {
         final subLine = code.substring(blockStartIndex + 1, blockEndIndex);
         final result = await handleLine(subLine);
@@ -112,7 +72,7 @@ class ScriptContext {
         return handleLine(buffer.toString());
       }
     }
-    final index = code.indexOf(commandSeparator);
+    final index = code.indexOf(runner.commandSeparator);
     final String commandName;
     final String argumentsString;
     if (index == -1) {
@@ -122,12 +82,12 @@ class ScriptContext {
       commandName = code.substring(0, index);
       argumentsString = code.substring(index + 1);
     }
-    final arguments = argumentsString.split(argumentSeparator);
+    final arguments = argumentsString.split(runner.argumentSeparator);
     final command = runner.commandsMap[commandName];
     if (command == null) {
       throw CommandNotFound(commandName);
     }
-    final value = callCommand(command, arguments);
+    final value = await callCommand(command, arguments);
     variables['_'] = ScriptVariable(
       name: '_',
       type: ScriptCommandArgumentType.string,
@@ -215,7 +175,7 @@ class ScriptContext {
     }
     final variableNames = variables.keys.join('|');
     final regExp = RegExp(
-      '([$variableBracket]($variableNames)[$variableBracket])',
+      '([^${runner.escapeChar}][${runner.variableBracket}]($variableNames))',
     );
     return text.replaceAllMapped(
       regExp,

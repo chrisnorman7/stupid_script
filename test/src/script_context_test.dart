@@ -5,7 +5,7 @@ import 'package:test/test.dart';
 
 void main() {
   final random = Random();
-  const runner = ScriptRunner.withDefaults();
+  final runner = ScriptRunner.withDefaults(random: random);
   group(
     'ScriptContext',
     () {
@@ -14,23 +14,11 @@ void main() {
         () {
           final context = ScriptContext(
             runner: runner,
-            random: random,
-            variables: {
-              'undefined': ScriptVariable.undefined(),
-            },
+            variables: {},
             functions: [],
           );
-          expect(context.argumentSeparator, '|');
-          expect(context.blockEnd, '}');
-          expect(context.blockStart, '{');
-          expect(context.commandSeparator, ' ');
-          expect(context.comment, '#');
-          // ignore: avoid_print
-          expect(context.outputText, print);
-          expect(context.random, random);
           expect(context.runner, runner);
-          expect(context.variableBracket, '%');
-          expect(context.variables.length, 1);
+          expect(context.variables, isEmpty);
           expect(context.getVariableValue('undefined'), undefined);
         },
       );

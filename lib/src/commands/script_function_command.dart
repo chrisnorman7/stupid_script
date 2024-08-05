@@ -51,17 +51,8 @@ class ScriptFunctionCommand implements ScriptCommand {
     }
     final subContext = ScriptContext(
       runner: scriptContext.runner,
-      random: scriptContext.random,
       variables: variables,
       functions: scriptContext.functions,
-      argumentSeparator: scriptContext.argumentSeparator,
-      blockEnd: scriptContext.blockEnd,
-      blockStart: scriptContext.blockStart,
-      commandSeparator: scriptContext.commandSeparator,
-      comment: scriptContext.comment,
-      functionEnd: scriptContext.functionEnd,
-      outputText: scriptContext.outputText,
-      variableBracket: scriptContext.variableBracket,
     );
     await subContext.run(scriptFunction.lines);
     return null;

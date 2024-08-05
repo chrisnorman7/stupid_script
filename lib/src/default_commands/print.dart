@@ -1,3 +1,4 @@
+// ignore_for_file: avoid_print
 import '../commands/arguments/script_command_argument.dart';
 import '../commands/arguments/script_command_optional_argument.dart';
 import '../commands/script_command.dart';
@@ -34,7 +35,7 @@ class Print extends ScriptCommand<void> {
     final Map<String, dynamic> arguments,
   ) {
     final text = arguments[textArgument.name];
-    scriptContext.outputText(text);
+    print(text);
   }
 
   /// The name of this command.

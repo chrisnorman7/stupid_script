@@ -56,11 +56,11 @@ class RandomInt extends ScriptCommand<int> {
     final a = arguments[aArgument.name] as int;
     final b = arguments[bArgument.name] as int;
     if (b == 0) {
-      return scriptContext.random.nextInt(a);
+      return scriptContext.runner.random.nextInt(a);
     }
     final lower = min(a, b);
     final upper = max(a, b);
-    final n = scriptContext.random.nextInt(upper);
+    final n = scriptContext.runner.random.nextInt(upper);
     if (lower == 0) {
       return n;
     }
