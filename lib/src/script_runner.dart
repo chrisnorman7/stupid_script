@@ -1,5 +1,7 @@
 import 'dart:math';
 
+import 'package:csv/csv.dart';
+
 import '../default_commands.dart';
 import '../default_types.dart';
 import 'commands/script_command.dart';
@@ -18,11 +20,11 @@ class ScriptRunner {
     required this.random,
     this.comment = '#',
     this.commandSeparator = ' ',
-    this.argumentSeparator = '|',
     this.variableBracket = '%',
     this.blockStart = '{',
     this.blockEnd = '}',
     this.functionEnd = 'end',
+    this.converter = const CsvToListConverter(shouldParseNumbers: false),
   });
 
   /// Create a default instance.
@@ -30,20 +32,16 @@ class ScriptRunner {
     required this.random,
     this.comment = '#',
     this.commandSeparator = ' ',
-    this.argumentSeparator = '|',
     this.variableBracket = '%',
     this.blockStart = '{',
     this.blockEnd = '}',
     this.functionEnd = 'end',
+    this.converter = const CsvToListConverter(shouldParseNumbers: false),
   })  : commands = defaultCommands,
         types = defaultTypes;
 
   /// The commands to use.
   final List<ScriptCommand> commands;
-
-  /// The map of commands to use.
-  Map<String, ScriptCommand> get commandsMap =>
-      {for (final command in commands) command.name: command};
 
   /// The types supported by this runner.
   final List<DataType> types;
@@ -61,9 +59,6 @@ class ScriptRunner {
   /// The character which separates a command from its arguments.
   final String commandSeparator;
 
-  /// The argument separator to use.
-  final String argumentSeparator;
-
   /// The characters to surround variable names for expansion.
   final String variableBracket;
 
@@ -75,6 +70,9 @@ class ScriptRunner {
 
   /// The string which signifies the end of a function.
   final String functionEnd;
+
+  /// The CSV converter to use.
+  final CsvToListConverter converter;
 
   /// Run the lines of [script].
   Future<void> runScript(

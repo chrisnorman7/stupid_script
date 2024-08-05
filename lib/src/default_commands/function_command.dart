@@ -50,7 +50,7 @@ class FunctionCommand extends ScriptCommand<String> {
   ) {
     final name = arguments[nameArgument.name] as String;
     final functionArguments = (arguments[argumentsArgument.name] as String)
-        .split(',')
+        .split('|')
         .map((final string) {
       final values = string.split(':');
       final argumentName = values.first;

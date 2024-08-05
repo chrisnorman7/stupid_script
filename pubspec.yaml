@@ -7,7 +7,7 @@ environment:
   sdk: ^3.5.0-323.1.beta
 
 dependencies:
-  path: ^1.8.0
+  csv: ^6.0.0
 
 dev_dependencies:
   lints: ^4.0.0

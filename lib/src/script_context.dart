@@ -20,6 +20,13 @@ class ScriptContext {
   /// The functions which have been defined by the programmer.
   final List<ScriptFunction> functions;
 
+  /// The map of commands to use.
+  Map<String, ScriptCommand> get commandsMap => {
+        for (final command in runner.commands) command.name: command,
+        for (final function in functions)
+          function.name: ScriptFunctionCommand(function),
+      };
+
   /// The function which is currently being added to.
   ScriptFunction? scriptFunction;
 
@@ -82,11 +89,19 @@ class ScriptContext {
       commandName = code.substring(0, commandEnd);
       argumentsString = code.substring(commandEnd + 1);
     }
-    var arguments = argumentsString.split(runner.argumentSeparator);
-    if (arguments.length == 1 && arguments.single.isEmpty) {
+    final converted = runner.converter.convert(argumentsString);
+    final List<String> arguments;
+    if (converted.isEmpty) {
       arguments = [];
+    } else {
+      arguments = converted.single.map<String>((final argument) {
+        if (argument is String) {
+          return argument;
+        }
+        return argument.toString();
+      }).toList();
     }
-    final command = runner.commandsMap[commandName];
+    final command = commandsMap[commandName];
     if (command == null) {
       throw CommandNotFound(commandName);
     }
@@ -171,7 +186,7 @@ class ScriptContext {
       regExp,
       (final match) {
         final variableName = match.group(match.groupCount)!;
-        return getVariableValue(variableName);
+        return getVariableValue(variableName).toString();
       },
     );
   }

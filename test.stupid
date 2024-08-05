@@ -1,9 +1,9 @@
-function print_line|line_number:The line number to show.:int,text:The text to show.
+function print_line,line_number:The line number to show.:int|text:The text to show.
   print [%line_number]: %text
 end
-print This script is %filename.
-print Variable names: {variables}.
+print_line 1,"Once upon a time, there was a script called %filename."
+print "Variable names: {variables}."
 print A child is {random_int 19}.
-print An adult is {random_int 25|18}.
+print An adult is {random_int 25,18}.
 print The next line will throw an error.
 random_int forty-five
